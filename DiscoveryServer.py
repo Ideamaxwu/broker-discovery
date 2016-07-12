@@ -1,19 +1,20 @@
 from BrokerDiscovery import IPtoLatLong,Broker
-from flask import Flask,jsonify
+from flask import Flask, jsonify, redirect
 from flask import request
 app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return "BrokerDiscovery Service present at endpoint."
+    return "BAD Broker Discovery Service"
 
 
 @app.route("/registerbroker", methods=['POST'])
 def registerBroker():
     global geoIP
     try:
-        brokerName=request.args['brokerName']
-        brokerIP=request.args['brokerIP']
+        result = request.get_json()
+        brokerName = result['brokerName']
+        brokerIP = result['brokerIP']
         geoIP.registerBroker(brokerName,brokerIP)
         return "Added broker successfully."
     except:
@@ -21,7 +22,7 @@ def registerBroker():
 
 
 @app.route("/getnearestbroker")
-def getNearestBroker():
+def getNearestBroker1():
     global geoIP
     clientIP=str(request.environ.get('HTTP_X_REAL_IP', request.remote_addr))
     broker=geoIP.getNearestBroker(clientIP)
