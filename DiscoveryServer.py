@@ -4,8 +4,14 @@ from flask import request
 app = Flask(__name__)
 
 @app.route("/")
-def hello():
-    return "BAD Broker Discovery Service"
+def getNearestBroker():
+    global geoIP
+    clientIP=str(request.environ.get('HTTP_X_REAL_IP', request.remote_addr))
+    broker=geoIP.getNearestBroker(clientIP)
+    if broker:
+        return redirect(broker.IP, 302)
+    else:
+        return "Error. No brokers registered."
 
 
 @app.route("/registerbroker", methods=['POST'])
@@ -22,7 +28,7 @@ def registerBroker():
 
 
 @app.route("/getnearestbroker")
-def getNearestBroker1():
+def getBrokerIPAddress():
     global geoIP
     clientIP=str(request.environ.get('HTTP_X_REAL_IP', request.remote_addr))
     broker=geoIP.getNearestBroker(clientIP)
