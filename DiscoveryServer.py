@@ -9,9 +9,13 @@ def getNearestBroker():
     clientIP=str(request.environ.get('HTTP_X_REAL_IP', request.remote_addr))
     broker=geoIP.getNearestBroker(clientIP)
     if broker:
-        return redirect(broker.IP, 302)
+        broker_address = 'http://' + broker.IP + ':8989'
+
+        return redirect(broker_address, 302)
     else:
         return "Error. No brokers registered."
+
+    #return "Hello from the other side"
 
 
 @app.route("/registerbroker", methods=['POST'])
