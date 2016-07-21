@@ -1,3 +1,6 @@
+import Lock
+mutex = Lock()
+
 MAX_CONNECTIONS = 20
 
 class Broker(object):
@@ -16,16 +19,20 @@ class BrokerDiscoveryLoadBalancing(object):
         self.connection_map[brokerIP] = 0
 
     def insert_connection(self, brokerIP):
+        mutex.acquire()
         try:
             self.connection_map[brokerIP] += 1
         except:
             self.connection_map[brokerIP] = 1
+        mutex.release()
 
     def remove_connection(self, brokerIP):
+        mutex.acquire()
         try:
             self.connection_map[brokerIP] -= 1
         except:
             print "Broker does not exist. Something went wrong"
+        mutex.release()
 
     def get_least_connected_broker(self):
         pass
